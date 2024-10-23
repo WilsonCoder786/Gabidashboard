@@ -56,13 +56,13 @@ export default function Nav({ openNav, onCloseNav }) {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: '#DF3870', // Background color for the content area
-          color: 'white', // Font color for content
+          backgroundColor: 'white', // Background color for the content area
+          color: '#DF3870', // Font color for content
         },
         '@media (max-width: 600px)': {
           // Mobile view adjustments
-          backgroundColor: 'green', // Background color for the content area
-          color: 'white',
+          backgroundColor: 'white', // Background color for the content area
+          color: '#DF3870',
         },
       }}
     >
@@ -70,13 +70,13 @@ export default function Nav({ openNav, onCloseNav }) {
         <Logo />
       </Box>
 
-      <Box sx={{ mb: 5, mx: 2.5 }}>
+      <Box sx={{ mb: 5, mx: 2.5, backgroundColor: 'white' }}>
         <Link underline="none">
           <StyledAccount>
             <Avatar src={account.photoURL} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'white' }}>
+              <Typography variant="subtitle2" sx={{ color: '#DF3870' }}>
                 Admin
               </Typography>
 
