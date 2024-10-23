@@ -56,7 +56,7 @@ export default function Nav({ openNav, onCloseNav }) {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: 'green', // Background color for the content area
+          backgroundColor: '#DF3870', // Background color for the content area
           color: 'white', // Font color for content
         },
         '@media (max-width: 600px)': {

@@ -211,7 +211,7 @@ const ProductList = () => {
             </Box>
           )}
           renderTopToolbarCustomActions={() => (
-            <Button color="secondary" onClick={() => setCreateModalOpen(true)} variant="contained">
+            <Button style={{ backgroundColor: '#DF3870' }} onClick={() => setCreateModalOpen(true)} variant="contained">
               Add New Product
             </Button>
           )}
@@ -332,7 +332,7 @@ const CreateProductModal = ({ open, onClose, onSubmit }) => {
       </DialogContent>
       <DialogActions sx={{ p: '1.25rem' }}>
         <Button onClick={onClose}>Cancel</Button>
-        <Button color="secondary" onClick={handleSubmit} variant="contained">
+        <Button style={{ backgroundColor: '#DF3870' }} onClick={handleSubmit} variant="contained">
           Create Product
         </Button>
       </DialogActions>

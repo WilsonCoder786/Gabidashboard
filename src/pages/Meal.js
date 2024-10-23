@@ -202,7 +202,7 @@ const Meal = () => {
           </Box>
         )}
         renderTopToolbarCustomActions={() => (
-          <Button color="secondary" onClick={() => setCreateModalOpen(true)} variant="contained">
+          <Button style={{ backgroundColor: '#DF3870' }} onClick={() => setCreateModalOpen(true)} variant="contained">
             Create New Meal
           </Button>
         )}
@@ -246,19 +246,16 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
           >
             {columns.map((column) =>
               column.accessorKey === 'category' ? (
-                
-                
                 <Select
                   onChange={(e) => setValues({ ...values, [e.target.name]: e.target.value })}
                   name={column.accessorKey}
                   key={column.accessorKey}
-                  label={column.header}                  
+                  label={column.header}
                 >
                   <MenuItem value="veg">Veg</MenuItem>
                   <MenuItem value="nonVeg">Non Veg</MenuItem>
                   <MenuItem value="crop">Crop</MenuItem>
                 </Select>
-                
               ) : (
                 <TextField
                   key={column.accessorKey}
@@ -273,7 +270,7 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
       </DialogContent>
       <DialogActions sx={{ p: '1.25rem' }}>
         <Button onClick={onClose}>Cancel</Button>
-        <Button color="secondary" onClick={handleSubmit} variant="contained">
+        <Button style={{ backgroundColor: '#DF3870' }} onClick={handleSubmit} variant="contained">
           Create New Meal
         </Button>
       </DialogActions>

@@ -25,6 +25,10 @@ import OrderManagement from './pages/OrderPage';
 import TransportationManagement from './pages/TransportationMangemnet';
 import PromotionalCodeManagement from './pages/PromotionalCode';
 import BannerManagement from './pages/BannerMangement';
+import FlashSaleManagement from './pages/FlashMangement';
+import EventManagementAdmin from './pages/EventMangemnet';
+import NewsManagement from './pages/OrderMangement';
+import PointsAccumulation from './pointsLevelMangement';
 
 export default function Router() {
   const navigate = useNavigate();
@@ -51,6 +55,11 @@ export default function Router() {
         { path: 'order', element: <OrderManagement /> },
         { path: 'transport', element: <TransportationManagement /> },
         { path: 'promotionalCode', element: <PromotionalCodeManagement /> },
+        { path: 'flash_sale', element: <FlashSaleManagement /> },
+        { path: 'event_management', element: <EventManagementAdmin /> },
+        { path: 'news_management', element: <NewsManagement /> },
+        { path: 'points_management', element: <PointsAccumulation /> },
+
         { path: 'banner', element: <BannerManagement /> },
         { path: 'content', element: <ContentPage /> },
         { path: 'subscription', element: <PostPage /> },

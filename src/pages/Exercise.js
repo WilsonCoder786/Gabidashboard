@@ -22,12 +22,11 @@ import { addExercise, deleteExercise, getExercise, updateExercise } from '../ser
 const Exercise = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
-//   const [validationErrors, setValidationErrors] = useState({});
+  //   const [validationErrors, setValidationErrors] = useState({});
 
   const handleCreateNewRow = async (values) => {
     await addExercise(values);
     getdata();
-    
   };
   const getdata = async () => {
     const resp = await getExercise();
@@ -39,62 +38,59 @@ const Exercise = () => {
   }, []);
 
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
-      await updateExercise(tableData[row.index]._id, values);
+    await updateExercise(tableData[row.index]._id, values);
 
-      getdata();
-     
-      exitEditingMode(); //  required to exit editing mode and close modal
+    getdata();
+
+    exitEditingMode(); //  required to exit editing mode and close modal
     // if (!Object.keys(validationErrors).length) {
-      
+
     // }
   };
 
-//   const handleCancelRowEdits = () => {
-//     setValidationErrors({});
-//   };
+  //   const handleCancelRowEdits = () => {
+  //     setValidationErrors({});
+  //   };
 
   const handleDeleteRow = useCallback(
     async (row) => {
-    
-      
       await deleteExercise(tableData[row.index]._id);
       getdata();
-      
     },
     [tableData]
   );
 
-//   const getCommonEditTextFieldProps = useCallback(
-//     (cell) => {
-//       return {
-//         error: !!validationErrors[cell.id],
-//         helperText: validationErrors[cell.id],
-//         onBlur: (event) => {
-//           console.log(cell.column, '-=-=-=-');
-//           const isValid =
-//             cell.column.id === 'email'
-//               ? validateEmail(event.target.value)
-//               : cell.column.id === 'age'
-//               ? validateAge(+event.target.value)
-//               : validateRequired(event.target.value);
-//           if (!isValid) {
-//             // set validation error for cell if invalid
-//             setValidationErrors({
-//               ...validationErrors,
-//               [cell.id]: `${cell.column.columnDef.header} is required`,
-//             });
-//           } else {
-//             // remove validation error for cell if valid
-//             delete validationErrors[cell.id];
-//             setValidationErrors({
-//               ...validationErrors,
-//             });
-//           }
-//         },
-//       };
-//     },
-//     [validationErrors]
-//   );
+  //   const getCommonEditTextFieldProps = useCallback(
+  //     (cell) => {
+  //       return {
+  //         error: !!validationErrors[cell.id],
+  //         helperText: validationErrors[cell.id],
+  //         onBlur: (event) => {
+  //           console.log(cell.column, '-=-=-=-');
+  //           const isValid =
+  //             cell.column.id === 'email'
+  //               ? validateEmail(event.target.value)
+  //               : cell.column.id === 'age'
+  //               ? validateAge(+event.target.value)
+  //               : validateRequired(event.target.value);
+  //           if (!isValid) {
+  //             // set validation error for cell if invalid
+  //             setValidationErrors({
+  //               ...validationErrors,
+  //               [cell.id]: `${cell.column.columnDef.header} is required`,
+  //             });
+  //           } else {
+  //             // remove validation error for cell if valid
+  //             delete validationErrors[cell.id];
+  //             setValidationErrors({
+  //               ...validationErrors,
+  //             });
+  //           }
+  //         },
+  //       };
+  //     },
+  //     [validationErrors]
+  //   );
 
   const columns = useMemo(
     () => [
@@ -106,7 +102,7 @@ const Exercise = () => {
         enableSorting: false,
 
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-        //   ...getCommonEditTextFieldProps(cell),
+          //   ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
@@ -120,11 +116,11 @@ const Exercise = () => {
         type: 'number',
 
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-        //   ...getCommonEditTextFieldProps(cell),
+          //   ...getCommonEditTextFieldProps(cell),
           type: 'number',
         }),
       },
-      
+
       {
         accessorKey: 'lbs',
         header: 'Weight (in lbs)',
@@ -133,12 +129,11 @@ const Exercise = () => {
         enableSorting: false,
         size: 10,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-        //   ...getCommonEditTextFieldProps(cell),
+          //   ...getCommonEditTextFieldProps(cell),
           type: 'number',
         }),
       },
-    
-    ],
+    ]
     // [getCommonEditTextFieldProps]
   );
 
@@ -184,7 +179,7 @@ const Exercise = () => {
           </Box>
         )}
         renderTopToolbarCustomActions={() => (
-          <Button color="secondary" onClick={() => setCreateModalOpen(true)} variant="contained">
+          <Button style={{ backgroundColor: '#DF3870' }} onClick={() => setCreateModalOpen(true)} variant="contained">
             Create New Exercise
           </Button>
         )}
@@ -239,7 +234,7 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
       </DialogContent>
       <DialogActions sx={{ p: '1.25rem' }}>
         <Button onClick={onClose}>Cancel</Button>
-        <Button color="secondary" onClick={handleSubmit} variant="contained">
+        <Button style={{ backgroundColor: '#DF3870' }} onClick={handleSubmit} variant="contained">
           Create New Exercise
         </Button>
       </DialogActions>

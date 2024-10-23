@@ -93,7 +93,7 @@ const PromotionalCodeManagement = () => {
         Promotional Code Management
       </Typography>
       <Button
-        color="secondary"
+        style={{ backgroundColor: '#DF3870' }}
         onClick={() => {
           setCurrentPromoCode(null);
           setPromoCode('');

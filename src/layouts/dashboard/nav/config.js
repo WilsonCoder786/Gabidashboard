@@ -27,6 +27,11 @@ const navConfig = [
     icon: icon('post-svgrepo-com'),
   },
   {
+    title: 'Events Management',
+    path: '/dashboard/event_management',
+    icon: icon('post-svgrepo-com'),
+  },
+  {
     title: 'Orders',
     path: '/dashboard/order',
     icon: icon('post-svgrepo-com'),
@@ -47,15 +52,25 @@ const navConfig = [
     icon: icon('post-svgrepo-com'),
   },
   {
+    title: 'Flash Sale Management',
+    path: '/dashboard/flash_sale',
+    icon: icon('post-svgrepo-com'),
+  },
+  {
+    title: 'News Management',
+    path: '/dashboard/news_management',
+    icon: icon('post-svgrepo-com'),
+  },
+  {
+    title: 'Points Management',
+    path: '/dashboard/points_management',
+    icon: icon('post-svgrepo-com'),
+  },
+  {
     title: 'content',
     path: '/dashboard/content',
     icon: icon('content-email-inbox-mail-message-icon-svgrepo-com'),
   },
-  // {
-  //   title: 'subscription',
-  //   path: '/dashboard/subscription',
-  //   icon: icon('collection-email-svgrepo-com'),
-  // },
   {
     title: 'Notifications',
     path: '/dashboard/notification',

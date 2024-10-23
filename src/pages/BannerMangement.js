@@ -112,7 +112,8 @@ const BannerManagement = () => {
         Banner Management
       </Typography>
       <Button
-        color="secondary"
+        //     style={{ backgroundColor: '#DF3870' }}
+        style={{ backgroundColor: '#DF3870' }}
         onClick={() => {
           setCurrentBanner(null);
           setTitle('');

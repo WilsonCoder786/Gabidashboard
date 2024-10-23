@@ -99,7 +99,7 @@ const CategoryList = () => {
         Category List
       </Typography>
       <Button
-        color="secondary"
+        style={{ backgroundColor: '#DF3870' }}
         onClick={() => {
           setNewCategoryName('');
           setCurrentCategory(null);
