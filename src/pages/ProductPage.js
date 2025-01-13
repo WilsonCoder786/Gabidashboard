@@ -9,157 +9,162 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  MenuItem,
-  Select,
-  Stack,
-  Table,
-  TableBody,
-  TableContainer,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import axios from 'axios';
+import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { Delete, Edit, Close } from '@mui/icons-material';
+import { db } from '../service/firebase_config';
 import './PostPage.css';
-import TableLoading from '../components/table-loading/tableLoading';
 
 const ProductList = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [currentRow, setCurrentRow] = useState(null);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [images, setImages] = useState([]);
+  const [values, setValues] = useState({
+    name: '',
+    price: '',
+    category: '',
+    image: '',
+  });
+
+  // Fetch products from Firestore
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setTableData(products);
+        console.log(products[0].images)
+      } catch (error) {
+        console.error("Error fetching products from Firestore", error);
+      }
+      setIsLoading(false);
+    };
+    fetchProducts();
+  }, []);
+
+  const handleFileChange = (event) => {
+    setImages([...event.target.files]);
+  };
+
+  const handleAddProduct = async () => {
+    const imageUrls = await uploadImagesToCloudinary(images);
+    const newProduct = {
+      ...values,
+      images: imageUrls,
+    };
+
+    try {
+      const docRef = await addDoc(collection(db, "products"), newProduct);
+      setTableData((prevData) => [...prevData, { id: docRef.id, ...newProduct }]);
+      setCreateModalOpen(false);
+    } catch (error) {
+      console.error("Error adding product", error);
+    }
+  };
+
+  const uploadImagesToCloudinary = async (images) => {
+    const imageUploadPromises = images.map((image) => {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "newpresent");
+
+      return axios.post(`https://api.cloudinary.com/v1_1/dkfgfnbst/image/upload`, formData)
+        .then((response) => response.data.secure_url)
+        .catch((error) => {
+          console.error("Error uploading image to Cloudinary", error);
+          return null;
+        });
+    });
+
+    const imageUrls = await Promise.all(imageUploadPromises);
+    return imageUrls.filter(url => url !== null);
+  };
 
   const handleEditRow = (row) => {
     setCurrentRow(row);
-    setEditModalOpen(true); // Open edit dialog
+    setValues({
+      name: row.original.name,
+      price: row.original.price,
+      category: row.original.category,
+      image: row.original.image,
+    });
+    setEditModalOpen(true);
   };
 
   const handleDeleteRow = (row) => {
     setCurrentRow(row);
-    setDeleteModalOpen(true); // Open delete confirmation dialog
+    setDeleteModalOpen(true);
   };
 
-  const handleSaveChanges = () => {
-    // Save edited data logic
-    setEditModalOpen(false);
+  const handleConfirmDelete = async () => {
+    if (currentRow) {
+      try {
+        await deleteDoc(doc(db, "products", currentRow.id)); // Delete product from Firestore
+        setTableData((prevData) => prevData.filter((item) => item.id !== currentRow.id));
+        setDeleteModalOpen(false);
+      } catch (error) {
+        console.error("Error deleting product from Firestore", error);
+      }
+    }
   };
 
-  const handleConfirmDelete = () => {
-    // Perform delete logic
-    setTableData((prevData) => prevData.filter((item) => item.id !== currentRow.original.id));
-    setDeleteModalOpen(false);
+  const handleSaveChanges = async () => {
+    const imageUrls = await uploadImagesToCloudinary(images);
+    const updatedProduct = {
+      ...values,
+      images: imageUrls.length > 0 ? imageUrls : currentRow.original.images,
+    };
+
+    try {
+      await updateDoc(doc(db, "products", currentRow.id), updatedProduct); // Update product in Firestore
+      setTableData((prevData) =>
+        prevData.map((product) =>
+          product.id === currentRow.id ? { ...product, ...updatedProduct } : product
+        )
+      );
+      setEditModalOpen(false);
+    } catch (error) {
+      console.error("Error updating product in Firestore", error);
+    }
   };
-
-  const TABLE_HEAD = [
-    { id: 'profile.image.file', label: 'Image', alignRight: false },
-    { id: 'profile.fullName', label: 'Name', alignRight: false },
-    { id: 'isCompleteProfile', label: 'Role', alignRight: false },
-    { id: 'userType', label: 'Profile Complete', alignRight: false },
-    { id: 'status', label: 'Posts', alignRight: false },
-    { id: 'Action', label: 'Action', alignRight: false },
-    { id: '_id' },
-  ];
-
-  // Simulate fetching data
-  useEffect(() => {
-    setTimeout(() => {
-      setTableData([
-        {
-          id: 1,
-          name: 'Product 1',
-          price: 100,
-          category: 'Category 1',
-          image:
-            'https://media.istockphoto.com/id/1215516074/photo/shopping-basket-with-fresh-food-isolated-on-white-grocery-supermarket-food-and-eats-online.jpg?s=612x612&w=0&k=20&c=feX2DMmoW0c36k8eQdHM2SGcMu_IAj3lFrf3VMRf-qU=',
-        },
-        {
-          id: 2,
-          name: 'Product 2',
-          price: 200,
-          category: 'Category 2',
-          image:
-            'https://media.istockphoto.com/id/475438008/vector/shopping-online-background.jpg?s=2048x2048&w=is&k=20&c=VD7bJLuCa7om0qdmLisZh9cuogC6oHpPtFMis4RVObI=',
-        },
-        {
-          id: 1,
-          name: 'Product 3',
-          price: 100,
-          category: 'Category 3',
-          image:
-            'https://media.istockphoto.com/id/1215516074/photo/shopping-basket-with-fresh-food-isolated-on-white-grocery-supermarket-food-and-eats-online.jpg?s=612x612&w=0&k=20&c=feX2DMmoW0c36k8eQdHM2SGcMu_IAj3lFrf3VMRf-qU=',
-        },
-        {
-          id: 2,
-          name: 'Product 4',
-          price: 200,
-          category: 'Category 4',
-          image:
-            'https://media.istockphoto.com/id/475438008/vector/shopping-online-background.jpg?s=2048x2048&w=is&k=20&c=VD7bJLuCa7om0qdmLisZh9cuogC6oHpPtFMis4RVObI=',
-        },
-        {
-          id: 1,
-          name: 'Product 5',
-          price: 100,
-          category: 'Category 5',
-          image:
-            'https://media.istockphoto.com/id/1215516074/photo/shopping-basket-with-fresh-food-isolated-on-white-grocery-supermarket-food-and-eats-online.jpg?s=612x612&w=0&k=20&c=feX2DMmoW0c36k8eQdHM2SGcMu_IAj3lFrf3VMRf-qU=',
-        },
-        {
-          id: 2,
-          name: 'Product 6',
-          price: 200,
-          category: 'Category 6',
-          image:
-            'https://media.istockphoto.com/id/475438008/vector/shopping-online-background.jpg?s=2048x2048&w=is&k=20&c=VD7bJLuCa7om0qdmLisZh9cuogC6oHpPtFMis4RVObI=',
-        },
-        {
-          id: 1,
-          name: 'Product 7',
-          price: 100,
-          category: 'Category 8',
-          image:
-            'https://media.istockphoto.com/id/1215516074/photo/shopping-basket-with-fresh-food-isolated-on-white-grocery-supermarket-food-and-eats-online.jpg?s=612x612&w=0&k=20&c=feX2DMmoW0c36k8eQdHM2SGcMu_IAj3lFrf3VMRf-qU=',
-        },
-        {
-          id: 2,
-          name: 'Product 2',
-          price: 200,
-          category: 'Category 2',
-          image:
-            'https://media.istockphoto.com/id/475438008/vector/shopping-online-background.jpg?s=2048x2048&w=is&k=20&c=VD7bJLuCa7om0qdmLisZh9cuogC6oHpPtFMis4RVObI=',
-        },
-      ]);
-      setIsLoading(false); // Stop loading after 2 seconds
-    }, 1000);
-  }, []);
-
-  // Handle creating a new product
-  const handleCreateNewProduct = (values) => {
-    setTableData((prevData) => [...prevData, { id: prevData.length + 1, ...values }]);
-    setCreateModalOpen(false);
-  };
-
-  // const handleDeleteRow = (row) => {
-  //   setTableData((prevData) => prevData.filter((item, index) => index !== row.index));
-  // };
 
   const columns = [
     { accessorKey: 'name', header: 'Product Name' },
     { accessorKey: 'price', header: 'Price', type: 'number' },
     { accessorKey: 'category', header: 'Category' },
+    
+    // Reorder Images column before Actions column
     {
-      accessorKey: 'image',
-      header: 'Image',
-      Cell: ({ cell }) => (
-        <img
-          src={cell.getValue()} // Assuming cell.getValue() returns the image URL
-          alt="Product"
-          style={{ width: '50px', height: '50px', objectFit: 'cover' }} // Set your desired size
-        />
-      ),
+      accessorKey: 'images',
+      header: 'Images',
+      Cell: ({ cell }) => {
+        const imageUrls = cell.getValue(); // This should be an array of image URLs
+        return imageUrls && imageUrls.length > 0 ? (
+          <Box sx={{ display: 'flex', gap: '5px' }}>
+            {imageUrls.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Product ${index}`}
+                style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+              />
+            ))}
+          </Box>
+        ) : (
+          <Typography>No Images</Typography> // Fallback text if no images are available
+        );
+      },
     },
+  
+    // Actions column (moved after Images column)
     {
       header: 'Actions',
       Cell: ({ row }) => (
@@ -178,6 +183,8 @@ const ProductList = () => {
       ),
     },
   ];
+  
+  
 
   return (
     <>
@@ -185,158 +192,129 @@ const ProductList = () => {
         Product List
       </Typography>
       {isLoading ? (
-        <TableContainer sx={{ minWidth: 800 }}>
-          <Table>
-            <TableBody>
-              <TableLoading tableHeading={TABLE_HEAD} />
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Typography>Loading...</Typography> // Replace with your loading component
       ) : (
         <MaterialReactTable
           columns={columns}
           data={tableData}
-          renderRowActions={({ row }) => (
-            <Box sx={{ display: 'flex', gap: '1rem' }}>
-              <Tooltip arrow placement="left" title="Edit">
-                <IconButton>
-                  <Edit />
-                </IconButton>
-              </Tooltip>
-              <Tooltip arrow placement="right" title="Delete">
-                <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                  <Delete />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          )}
           renderTopToolbarCustomActions={() => (
-            <Button style={{ backgroundColor: '#DF3870' }} onClick={() => setCreateModalOpen(true)} variant="contained">
+            <Button onClick={() => setCreateModalOpen(true)} variant="contained">
               Add New Product
             </Button>
           )}
         />
       )}
-      {/* Edit Modal */}
+
+      {/* Add Product Modal */}
+      <Dialog open={createModalOpen} onClose={() => setCreateModalOpen(false)}>
+        <DialogTitle>Add New Product</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Product Name"
+            value={values.name}
+            onChange={(e) => setValues({ ...values, name: e.target.value })}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Price"
+            value={values.price}
+            onChange={(e) => setValues({ ...values, price: e.target.value })}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Category"
+            value={values.category}
+            onChange={(e) => setValues({ ...values, category: e.target.value })}
+            fullWidth
+            margin="dense"
+          />
+          <div>
+            <input
+              type="file"
+              multiple
+              onChange={handleFileChange}
+              accept="image/*"
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCreateModalOpen(false)}>Cancel</Button>
+          <Button onClick={handleAddProduct} color="primary">Add Product</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Product Modal */}
       {currentRow && (
-        <Dialog open={isEditModalOpen} onClose={() => setEditModalOpen(false)}>
+        <Dialog open={editModalOpen} onClose={() => setEditModalOpen(false)}>
           <DialogTitle>Edit Product</DialogTitle>
           <DialogContent>
             <TextField
               label="Product Name"
-              value={currentRow?.original?.name || ''}
-              onChange={(e) =>
-                setCurrentRow({ ...currentRow, original: { ...currentRow.original, name: e.target.value } })
-              }
+              value={values.name}
+              onChange={(e) => setValues({ ...values, name: e.target.value })}
               fullWidth
               margin="dense"
             />
             <TextField
               label="Price"
-              value={currentRow?.original?.price || ''}
-              onChange={(e) =>
-                setCurrentRow({ ...currentRow, original: { ...currentRow.original, price: e.target.value } })
-              }
+              value={values.price}
+              onChange={(e) => setValues({ ...values, price: e.target.value })}
               fullWidth
               margin="dense"
             />
             <TextField
               label="Category"
-              value={currentRow?.original?.category || ''}
-              onChange={(e) =>
-                setCurrentRow({ ...currentRow, original: { ...currentRow.original, category: e.target.value } })
-              }
+              value={values.category}
+              onChange={(e) => setValues({ ...values, category: e.target.value })}
               fullWidth
               margin="dense"
+            />
+            <div>
+              {currentRow.original.images?.map((img, index) => (
+                <Box key={index} sx={{ display: 'inline-block', position: 'relative', marginRight: '10px' }}>
+                  <img src={img} alt="product" width="50" height="50" />
+                  <IconButton
+                    onClick={() => {
+                      const newImages = currentRow.original.images.filter((_, idx) => idx !== index);
+                      setValues({ ...values, images: newImages });
+                    }}
+                    sx={{ position: 'absolute', top: '-5px', right: '-5px' }}
+                  >
+                    <Close />
+                  </IconButton>
+                </Box>
+              ))}
+            </div>
+            <input
+              type="file"
+              multiple
+              onChange={handleFileChange}
+              accept="image/*"
             />
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setEditModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleSaveChanges} color="primary">
-              Save
-            </Button>
+            <Button onClick={handleSaveChanges} color="primary">Save Changes</Button>
           </DialogActions>
         </Dialog>
       )}
 
       {/* Delete Confirmation Modal */}
       {currentRow && (
-        <Dialog open={isDeleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+        <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
           <DialogTitle>Confirm Delete</DialogTitle>
-          <DialogContent>Are you sure you want to delete {currentRow?.original?.name}?</DialogContent>
+          <DialogContent>
+            <Typography>Are you sure you want to delete this product?</Typography>
+          </DialogContent>
           <DialogActions>
             <Button onClick={() => setDeleteModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleConfirmDelete} color="error">
-              Delete
-            </Button>
+            <Button onClick={handleConfirmDelete} color="error">Delete</Button>
           </DialogActions>
         </Dialog>
       )}
-
-      <CreateProductModal
-        open={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
-        onSubmit={handleCreateNewProduct}
-      />
     </>
-  );
-};
-
-// Modal for creating a new product
-const CreateProductModal = ({ open, onClose, onSubmit }) => {
-  const [values, setValues] = useState({
-    name: '',
-    price: '',
-    category: '',
-    image: '',
-  });
-
-  const handleSubmit = () => {
-    onSubmit(values);
-    onClose();
-  };
-
-  return (
-    <Dialog open={open}>
-      <DialogTitle textAlign="center">Create New Product</DialogTitle>
-      <DialogContent>
-        <Stack
-          sx={{
-            width: '100%',
-            minWidth: { xs: '300px', sm: '360px', md: '400px' },
-            gap: '1.5rem',
-          }}
-        >
-          <TextField
-            label="Product Name"
-            name="name"
-            onChange={(e) => setValues({ ...values, name: e.target.value })}
-          />
-          <TextField
-            label="Price"
-            name="price"
-            type="number"
-            onChange={(e) => setValues({ ...values, price: e.target.value })}
-          />
-          <Select
-            name="category"
-            value={values.category}
-            onChange={(e) => setValues({ ...values, category: e.target.value })}
-          >
-            <MenuItem value="Category 1">Category 1</MenuItem>
-            <MenuItem value="Category 2">Category 2</MenuItem>
-            <MenuItem value="Category 3">Category 3</MenuItem>
-          </Select>
-          <TextField label="Image" name="image" onChange={(e) => setValues({ ...values, image: e.target.value })} />
-        </Stack>
-      </DialogContent>
-      <DialogActions sx={{ p: '1.25rem' }}>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button style={{ backgroundColor: '#DF3870' }} onClick={handleSubmit} variant="contained">
-          Create Product
-        </Button>
-      </DialogActions>
-    </Dialog>
   );
 };
 

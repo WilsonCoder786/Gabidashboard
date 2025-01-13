@@ -22,10 +22,10 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
   const logo = (
     <Box
       component="img"
-      src={'https://i.ibb.co/vPm54Lh/IrGkzM.jpg'}
+      src={'https://i.ibb.co/VLQN0XH/image-removebg-preview-1.png'}
       sx={{
-        width: 100,
-        height: 100,
+        width: 200,
+        height: 200,
         cursor: 'pointer',
         mx: 1,
         my: 1,
