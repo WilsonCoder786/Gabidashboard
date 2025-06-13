@@ -12,71 +12,40 @@ const navConfig = [
     icon: icon('dashboard-layout-svgrepo-com'),
   },
   {
-    title: 'Users',
-    path: '/dashboard/user',
+    title: 'Customer Controls',
+    path: '/dashboard/customer',
     icon: icon('user-circle-svgrepo-com'),
   },
   {
-    title: 'Category',
-    path: '/dashboard/category',
-    icon: icon('post-svgrepo-com'),
+    title: 'Driver Controls',
+    path: '/dashboard/driver',
+    icon: icon('car-svgrepo-com'),
   },
   {
-    title: 'Products',
+    title: 'Vendor Admin Controls',
+    path: '/dashboard/vendor',
+    icon: icon('shop-svgrepo-com'),
+  },
+  {
+    title: 'Zone Controls',
+    path: '/dashboard/zone',
+    icon: icon('map-svgrepo-com'),
+  },
+  {
+    title: 'Products Controls',
     path: '/dashboard/product',
     icon: icon('post-svgrepo-com'),
   },
   {
-    title: 'Events Management',
-    path: '/dashboard/event_management',
-    icon: icon('post-svgrepo-com'),
+    title: 'App Sliders Controls',
+    path: '/dashboard/sliders',
+    icon: icon('image-svgrepo-com'),
   },
   {
-    title: 'Orders',
-    path: '/dashboard/order',
-    icon: icon('post-svgrepo-com'),
+    title: 'Settings',
+    path: '/dashboard/settings',
+    icon: icon('settings-svgrepo-com'),
   },
-  {
-    title: 'Transport Mangement',
-    path: '/dashboard/transport',
-    icon: icon('post-svgrepo-com'),
-  },
-  {
-    title: 'Promotional Code Mangement',
-    path: '/dashboard/promotionalCode',
-    icon: icon('post-svgrepo-com'),
-  },
-  {
-    title: 'Banner Mangement',
-    path: '/dashboard/banner',
-    icon: icon('post-svgrepo-com'),
-  },
-  {
-    title: 'Flash Sale Management',
-    path: '/dashboard/flash_sale',
-    icon: icon('post-svgrepo-com'),
-  },
-  {
-    title: 'News Management',
-    path: '/dashboard/news_management',
-    icon: icon('post-svgrepo-com'),
-  },
-  {
-    title: 'Points Management',
-    path: '/dashboard/points_management',
-    icon: icon('post-svgrepo-com'),
-  },
-  {
-    title: 'content',
-    path: '/dashboard/content',
-    icon: icon('content-email-inbox-mail-message-icon-svgrepo-com'),
-  },
-  {
-    title: 'Notifications',
-    path: '/dashboard/notification',
-    icon: icon('notification-bell-1397-svgrepo-com'),
-  },
-
   {
     title: 'logout',
     path: '/login',

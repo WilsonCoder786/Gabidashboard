@@ -5,30 +5,16 @@ import { Navigate, useNavigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
-import BlogPage from './pages/BlogPage';
-import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import PostPage from './pages/ProductPage';
 import DashboardAppPage from './pages/DashboardAppPage';
-import ContentPage from './pages/ContentPage';
-import NotificationPage from './pages/NotificationPage';
-import Meal from './pages/Meal';
-import Exercise from './pages/Exercise';
-import RequestPage from './pages/RequestPage';
-import Diet from './pages/Diet';
-import Nutrition from './pages/Nutrition';
-import Routine from './pages/Routine';
-import Orders from './pages/OrdersPage';
-import CategoryList from './pages/CategoryPage';
-import OrderManagement from './pages/OrderPage';
-import TransportationManagement from './pages/TransportationMangemnet';
-import PromotionalCodeManagement from './pages/PromotionalCode';
-import BannerManagement from './pages/BannerMangement';
-import FlashSaleManagement from './pages/FlashMangement';
-import EventManagementAdmin from './pages/EventMangemnet';
-import NewsManagement from './pages/OrderMangement';
-import PointsAccumulation from './pointsLevelMangement';
+import CustomerPage from './pages/CustomerPage';
+import DriverPage from './pages/DriverPage';
+import VendorPage from './pages/VendorPage';
+import ZonePage from './pages/ZonePage';
+import ProductPage from './pages/ProductPage';
+import SlidersPage from './pages/SlidersPage';
+import SettingsPage from './pages/SettingsPage';
 
 export default function Router() {
   const navigate = useNavigate();
@@ -37,11 +23,9 @@ export default function Router() {
 
     if (!token) {
       navigate('/login');
-      console.log('1');
-    } else {
-      console.log('2');
     }
   }, []);
+
   const routes = useRoutes([
     {
       path: '/dashboard',
@@ -49,28 +33,13 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
-        { path: 'user', element: <UserPage /> },
-        { path: 'product', element: <PostPage /> },
-        { path: 'category', element: <CategoryList /> },
-        { path: 'order', element: <OrderManagement /> },
-        { path: 'transport', element: <TransportationManagement /> },
-        { path: 'promotionalCode', element: <PromotionalCodeManagement /> },
-        { path: 'flash_sale', element: <FlashSaleManagement /> },
-        { path: 'event_management', element: <EventManagementAdmin /> },
-        { path: 'news_management', element: <NewsManagement /> },
-        { path: 'points_management', element: <PointsAccumulation /> },
-
-        { path: 'banner', element: <BannerManagement /> },
-        { path: 'content', element: <ContentPage /> },
-        { path: 'subscription', element: <PostPage /> },
-        { path: 'notification', element: <NotificationPage /> },
-        { path: 'request', element: <RequestPage /> },
-        { path: 'meal', element: <Meal /> },
-        { path: 'exercise', element: <Exercise /> },
-        { path: 'diet', element: <Diet /> },
-        { path: 'orders', element: <Orders /> },
-        // { path: 'nutrition', element: <Nutrition /> },
-        { path: 'routine', element: <Routine /> },
+        { path: 'customer', element: <CustomerPage /> },
+        { path: 'driver', element: <DriverPage /> },
+        { path: 'vendor', element: <VendorPage /> },
+        { path: 'zone', element: <ZonePage /> },
+        { path: 'product', element: <ProductPage /> },
+        { path: 'sliders', element: <SlidersPage /> },
+        { path: 'settings', element: <SettingsPage /> },
       ],
     },
     {
